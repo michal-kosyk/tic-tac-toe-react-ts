@@ -23,15 +23,35 @@ body {
   background-color: var(--dark-gray);
 }
 
+body {
+  padding: 90px 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 80px);
   grid-template-rows: 50px repeat(3, 80px) 60px;
+  gap: 5px;
 }
 
-.grid div {
-  height: 20px;
-  width: 20px;
+.turn {
+  background-color: green;
+  grid-column-start: 1;
+  grid-column-end: 3;
+}
+
+.actions {
+  background-color: blue;
+}
+
+.square {
   background-color: red;
-  margin: 10px;
+}
+
+.score {
+  background-color: yellow;
 }
