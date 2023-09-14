@@ -31,6 +31,16 @@ body {
   align-items: center;
 }
 
+/* Utility classes */
+
+.hidden {
+  display: none !important;
+}
+
+.border {
+  border: 1px solid rgba(211, 211, 211, 0.6) !important;
+}
+
 .grid {
   display: grid;
   grid-template-columns: repeat(3, 80px);
@@ -46,6 +56,8 @@ body {
     gap: 20px;
   }
 }
+
+/* Component classes */
 
 .turn {
   color: var(--yellow);
@@ -107,6 +119,25 @@ body {
   color: white;
   background-color: rgba(211, 211, 211, 0.05);
   border: 1px solid transparent;
+}
+
+.menu .items {
+  position: absolute;
+  z-index: 10;
+  top: 60px;
+  right: 0;
+  background-color: var(--dark-gray);
+  border-radius: 6px;
+  padding: 10px;
+}
+
+.menu .items button {
+  background-color: transparent;
+  padding: 8px;
+  color: white;
+}
+.menu .items button:hover {
+  cursor: pointer;
 }
 
 .square {
