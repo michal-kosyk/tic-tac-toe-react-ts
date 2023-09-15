@@ -31,6 +31,11 @@ body {
   align-items: center;
 }
 
+button:hover {
+  cursor: pointer;
+  opacity: 80%;
+}
+
 /* Utility classes */
 
 .hidden {
@@ -140,9 +145,6 @@ body {
   padding: 8px;
   color: white;
 }
-.menu .items button:hover {
-  cursor: pointer;
-}
 
 .square {
   background-color: var(--gray);
@@ -159,5 +161,31 @@ body {
 }
 
 .score {
-  background-color: yellow;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.score p {
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.score span {
+  font-size: 12px;
+  margin-top: 2px;
+}
+
+.score.score--player-1 {
+  background-color: var(--turquoise);
+}
+
+.score.score--ties {
+  background-color: var(--light-gray);
+}
+
+.score.score--player-2 {
+  background-color: var(--yellow);
 }
