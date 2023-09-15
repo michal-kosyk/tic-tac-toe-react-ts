@@ -8,6 +8,10 @@ const App = {
     squares: document.querySelectorAll("[data-id='square']"),
   },
 
+  state: {
+    currentPlayer: 1,
+  },
+
   init() {
     App.registerEventListeners();
   },
@@ -31,10 +35,18 @@ const App = {
     // TODO
     App.$.squares.forEach((square) => {
       square.addEventListener("click", (event) => {
-        console.log(event.target.id);
+        const currentPlayer = App.state.currentPlayer;
 
         const icon = document.createElement("i");
-        icon.classList.add("fa-solid", "fa-x", "yellow");
+
+        if (currentPlayer === 1) {
+          icon.classList.add("fa-solid", "fa-x", "yellow");
+        } else {
+          icon.classList.add("fa-solid", "fa-o", "turquoise");
+        }
+
+        App.state.currentPlayer = App.state.currentPlayer === 1 ? 2 : 1;
+
         event.target.replaceChildren(icon);
         // <i class="fa-solid fa-x yellow"></i>
         // <i class="fa-solid fa-o turquoise"></i>
