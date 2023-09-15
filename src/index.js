@@ -9,7 +9,7 @@ const App = {
   },
 
   init() {
-    this.registerEventListeners();
+    App.registerEventListeners();
   },
 
   registerEventListeners() {
@@ -32,6 +32,12 @@ const App = {
     App.$.squares.forEach((square) => {
       square.addEventListener("click", (event) => {
         console.log(event.target.id);
+
+        const icon = document.createElement("i");
+        icon.classList.add("fa-solid", "fa-x", "yellow");
+        event.target.replaceChildren(icon);
+        // <i class="fa-solid fa-x yellow"></i>
+        // <i class="fa-solid fa-o turquoise"></i>
       });
     });
   },
