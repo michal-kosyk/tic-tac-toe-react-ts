@@ -35,6 +35,9 @@ const App = {
     // TODO
     App.$.squares.forEach((square) => {
       square.addEventListener("click", (event) => {
+        if (square.hasChildNodes()) {
+          return;
+        }
         const currentPlayer = App.state.currentPlayer;
 
         const icon = document.createElement("i");
@@ -47,9 +50,7 @@ const App = {
 
         App.state.currentPlayer = App.state.currentPlayer === 1 ? 2 : 1;
 
-        event.target.replaceChildren(icon);
-        // <i class="fa-solid fa-x yellow"></i>
-        // <i class="fa-solid fa-o turquoise"></i>
+        square.replaceChildren(icon);
       });
     });
   },
