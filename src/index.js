@@ -9,7 +9,56 @@ const App = {
   },
 
   state: {
-    currentPlayer: 1,
+    moves: [],
+    gameStatus: { status: "in-progress", winner: null },
+  },
+
+  getGameStatus(currentPlayer) {
+    const winningPatterns = [
+      [1, 2, 3],
+      [1, 5, 9],
+      [1, 4, 7],
+      [2, 5, 8],
+      [3, 5, 7],
+      [3, 6, 9],
+      [4, 5, 6],
+      [7, 8, 9],
+    ];
+
+    const currentPlayerMoves = App.state.moves.filter(
+      (move) => move.player === currentPlayer
+    );
+    const currentPlayerSquares = currentPlayerMoves.map(
+      (move) => move.squareId
+    );
+    let currentPlayerWins = false;
+
+    winningPatterns.forEach((winningPattern) => {
+      if (currentPlayerWins) {
+        return;
+      }
+      const result = winningPattern.map((squareId) => {
+        return currentPlayerSquares.includes(squareId);
+      });
+      currentPlayerWins = result.reduce((acc, currVal) => acc && currVal, true);
+    });
+
+    if (currentPlayerWins) {
+      return {
+        status: "completed",
+        winner: currentPlayer,
+      };
+    }
+    if (App.state.moves.length === 9) {
+      return {
+        status: "complete",
+        winner: null,
+      };
+    }
+    return {
+      status: "in-progress",
+      winner: null,
+    };
   },
 
   init() {
@@ -34,11 +83,22 @@ const App = {
 
     // TODO
     App.$.squares.forEach((square) => {
-      square.addEventListener("click", (event) => {
-        if (square.hasChildNodes()) {
+      square.addEventListener("click", (_event) => {
+        const hasMove = (squareId) => {
+          const existingMove = App.state.moves.find(
+            (move) => move.squareId === squareId
+          );
+          return existingMove !== undefined;
+        };
+
+        const gameFinished = App.state.gameStatus.status === "completed";
+
+        if (hasMove(+square.id) || gameFinished) {
           return;
         }
-        const currentPlayer = App.state.currentPlayer;
+
+        const movesCount = App.state.moves.length;
+        const currentPlayer = movesCount === 0 ? 1 : (movesCount % 2) + 1;
 
         const icon = document.createElement("i");
 
@@ -48,9 +108,29 @@ const App = {
           icon.classList.add("fa-solid", "fa-o", "turquoise");
         }
 
-        App.state.currentPlayer = App.state.currentPlayer === 1 ? 2 : 1;
+        App.state.moves.push({
+          player: currentPlayer,
+          squareId: +square.id,
+        });
 
         square.replaceChildren(icon);
+
+        // Check if won
+        const gameStatus = App.getGameStatus(currentPlayer);
+        App.state.gameStatus = gameStatus;
+        switch (gameStatus.status) {
+          case "completed":
+            const winner = gameStatus.winner;
+            if (winner) {
+              console.log(`Player ${winner} won the game!`);
+            } else {
+              console.log("It is a tie");
+            }
+            break;
+          case "in-progress":
+            console.log("Game continues");
+            break;
+        }
       });
     });
   },
