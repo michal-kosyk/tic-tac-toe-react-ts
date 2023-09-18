@@ -46,6 +46,14 @@ button:hover {
   display: none !important;
 }
 
+.yellow {
+  color: var(--yellow);
+}
+
+.turquoise {
+  color: var(--turquoise);
+}
+
 .shadow {
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.5);
 }
@@ -73,8 +81,6 @@ button:hover {
 /* Component classes */
 
 .turn {
-  color: var(--yellow);
-
   grid-column-start: 1;
   grid-column-end: 3;
   align-self: center;
