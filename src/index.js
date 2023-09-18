@@ -6,12 +6,16 @@ const App = {
     resetBtn: document.querySelector("[data-id='reset-btn']"),
     newRoundBtn: document.querySelector("[data-id='new-round-btn']"),
     squares: document.querySelectorAll("[data-id='square']"),
+    gameResultModal: document.querySelector("[data-id='game-result-modal']"),
+    gameResultText: document.querySelector(
+      "[data-id='game-result-modal-text']"
+    ),
+    gameResultButton: document.querySelector(
+      "[data-id='game-result-modal-button']"
+    ),
   },
 
-  state: {
-    moves: [],
-    gameStatus: { status: "in-progress", winner: null },
-  },
+  state: {},
 
   getGameStatus(currentPlayer) {
     const winningPatterns = [
@@ -49,7 +53,22 @@ const App = {
     };
   },
 
+  resetState() {
+    App.state = this.getCleanState();
+  },
+
+  getCleanState() {
+    return {
+      moves: [],
+      gameStatus: {
+        status: "in-progress",
+        winner: null,
+      },
+    };
+  },
+
   init() {
+    App.resetState();
     App.registerEventListeners();
   },
 
@@ -67,6 +86,12 @@ const App = {
     // TODO
     App.$.newRoundBtn.addEventListener("click", (event) => {
       console.log("New Round!");
+    });
+
+    // TODO
+    App.$.gameResultButton.addEventListener("click", (event) => {
+      App.resetState();
+      App.$.gameResultModal.classList.add("hidden");
     });
 
     // TODO
@@ -106,18 +131,12 @@ const App = {
         // Check if won
         const gameStatus = App.getGameStatus(currentPlayer);
         App.state.gameStatus = gameStatus;
-        switch (gameStatus.status) {
-          case "completed":
-            const winner = gameStatus.winner;
-            if (winner) {
-              console.log(`Player ${winner} won the game!`);
-            } else {
-              console.log("It is a tie");
-            }
-            break;
-          case "in-progress":
-            console.log("Game continues");
-            break;
+
+        if (gameStatus.status === "completed") {
+          const winner = gameStatus.winner;
+          const modalMsg = winner ? `Player ${winner} wins!` : "Tie";
+          App.$.gameResultText.textContent = modalMsg;
+          App.$.gameResultModal.classList.remove("hidden");
         }
       });
     });
