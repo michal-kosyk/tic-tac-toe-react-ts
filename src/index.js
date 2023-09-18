@@ -25,12 +25,9 @@ const App = {
       [7, 8, 9],
     ];
 
-    const currentPlayerMoves = App.state.moves.filter(
-      (move) => move.player === currentPlayer
-    );
-    const currentPlayerSquares = currentPlayerMoves.map(
-      (move) => move.squareId
-    );
+    const currentPlayerSquares = App.state.moves
+      .filter((move) => move.player === currentPlayer)
+      .map((move) => move.squareId);
     let currentPlayerWins = false;
 
     winningPatterns.forEach((winningPattern) => {
@@ -43,21 +40,12 @@ const App = {
       currentPlayerWins = result.reduce((acc, currVal) => acc && currVal, true);
     });
 
-    if (currentPlayerWins) {
-      return {
-        status: "completed",
-        winner: currentPlayer,
-      };
-    }
-    if (App.state.moves.length === 9) {
-      return {
-        status: "complete",
-        winner: null,
-      };
-    }
     return {
-      status: "in-progress",
-      winner: null,
+      status:
+        App.state.moves.length === 9 || currentPlayerWins
+          ? "completed"
+          : "in-progress",
+      winner: currentPlayerWins ? currentPlayer : null,
     };
   },
 
