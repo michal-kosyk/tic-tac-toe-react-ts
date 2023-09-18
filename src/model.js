@@ -45,6 +45,11 @@ export default class Model {
     });
   }
 
+  resetGame(players) {
+    this.players = players;
+    this.restartGame();
+  }
+
   isSquareTaken(squareId) {
     const existingMove = this.#getState().moves.find((move) => {
       return move.squareId === squareId;

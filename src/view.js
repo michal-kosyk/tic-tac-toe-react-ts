@@ -21,7 +21,7 @@ export default class View {
     // UI-only event listeners
 
     this.$.menuButton.addEventListener("click", (event) => {
-      this.#toggleMenu();
+      this.toggleMenu();
     });
   }
 
@@ -47,7 +47,7 @@ export default class View {
 
   // *** DOM helper methods
 
-  #toggleMenu() {
+  toggleMenu() {
     this.$.menuItems.classList.toggle("hidden");
     this.$.menuButton.classList.toggle("border");
 

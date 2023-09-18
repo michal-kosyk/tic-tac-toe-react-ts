@@ -168,35 +168,40 @@ const App = {
   },
 };
 
-const players = [
-  {
-    id: 1,
-    name: "Player 1",
-    iconClass: "fa-o",
-    colorClass: "turquoise",
-    wins: 0,
-  },
-  {
-    id: 2,
-    name: "Player 2",
-    iconClass: "fa-x",
-    colorClass: "yellow",
-    wins: 0,
-  },
-];
+const players = () => {
+  return [
+    {
+      id: 1,
+      name: "Player 1",
+      iconClass: "fa-o",
+      colorClass: "turquoise",
+      wins: 0,
+    },
+    {
+      id: 2,
+      name: "Player 2",
+      iconClass: "fa-x",
+      colorClass: "yellow",
+      wins: 0,
+    },
+  ];
+};
 
 function init() {
   const view = new View();
-  const model = new Model(players);
+  const model = new Model(players());
 
   view.bindGameResetEvent((event) => {
-    console.log("Reset Event!");
-    console.log(event);
+    model.resetGame(players());
+    view.clearGameBoard();
+    view.toggleMenu();
+    view.updateScore(model.score);
   });
 
   view.bindNewRoundEvent((event) => {
-    console.log("New Round Event!");
-    console.log(event);
+    model.restartGame();
+    view.clearGameBoard();
+    view.toggleMenu();
   });
 
   view.bindPlayAgainEvent((event) => {
