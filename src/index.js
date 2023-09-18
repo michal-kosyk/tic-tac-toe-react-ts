@@ -13,6 +13,9 @@ const App = {
     gameResultButton: document.querySelector(
       "[data-id='game-result-modal-button']"
     ),
+    turn: document.querySelector("[data-id='turn']"),
+    turnIcon: document.querySelector("[data-id='turn-icon']"),
+    turnText: document.querySelector("[data-id='turn-text']"),
   },
 
   state: {},
@@ -60,11 +63,16 @@ const App = {
   getCleanState() {
     return {
       moves: [],
+      currentPlayer: 1,
       gameStatus: {
         status: "in-progress",
         winner: null,
       },
     };
+  },
+
+  getNextPlayer() {
+    return App.state.currentPlayer === 1 ? 2 : 1;
   },
 
   init() {
@@ -91,6 +99,7 @@ const App = {
     // TODO
     App.$.gameResultButton.addEventListener("click", (event) => {
       App.resetState();
+      App.$.squares.forEach((square) => square.replaceChildren());
       App.$.gameResultModal.classList.add("hidden");
     });
 
@@ -114,12 +123,25 @@ const App = {
         const currentPlayer = movesCount === 0 ? 1 : (movesCount % 2) + 1;
 
         const icon = document.createElement("i");
+        turnElement = App.$.turn;
+        const turnIcon = document.createElement("i");
+        const tunrParagraph = document.createElement("p");
+        tunrParagraph.innerText = `Player ${App.getNextPlayer()}, you're up!`;
 
         if (currentPlayer === 1) {
           icon.classList.add("fa-solid", "fa-x", "yellow");
+
+          turnElement.classList.remove("yellow");
+          turnElement.classList.add("turquoise");
+          turnIcon.classList.add("fa-solid", "fa-o", "turquoise");
         } else {
           icon.classList.add("fa-solid", "fa-o", "turquoise");
+
+          turnElement.classList.remove("turquoise");
+          turnElement.classList.add("yellow");
+          turnIcon.classList.add("fa-solid", "fa-x", "yellow");
         }
+        turnElement.replaceChildren(turnIcon, tunrParagraph);
 
         App.state.moves.push({
           player: currentPlayer,
