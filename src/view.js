@@ -3,7 +3,6 @@ export default class View {
   $$ = {};
 
   constructor() {
-    this.$.menu = this.#qs("[data-id='menu']");
     this.$.menuButton = this.#qs("[data-id='menu-btn']");
     this.$.menuItems = this.#qs("[data-id='menu-items']");
     this.$.resetBtn = this.#qs("[data-id='reset-btn']");
@@ -14,8 +13,11 @@ export default class View {
     this.$.turn = this.#qs("[data-id='turn']");
     this.$.turnIcon = this.#qs("[data-id='turn-icon']");
     this.$.turnText = this.#qs("[data-id='turn-text']");
+    this.$.player1Score = this.#qs("[data-id='score-player-1'");
+    this.$.player2Score = this.#qs("[data-id='score-player-2'");
+    this.$.tiesScore = this.#qs("[data-id='score-ties'");
 
-    this.$$.squares = document.querySelectorAll("[data-id='square']");
+    this.$$.squares = this.#qsAll("[data-id='square']");
     // UI-only event listeners
 
     this.$.menuButton.addEventListener("click", (event) => {
@@ -35,8 +37,12 @@ export default class View {
 
   bindPlayerMoveEvent(handler) {
     this.$$.squares.forEach((square) => {
-      square.addEventListener("click", handler);
+      square.addEventListener("click", () => handler(square));
     });
+  }
+
+  bindPlayAgainEvent(handler) {
+    this.$.gameResultButton.addEventListener("click", handler);
   }
 
   // *** DOM helper methods
@@ -50,17 +56,44 @@ export default class View {
     icon.classList.toggle("fa-chevron-up");
   }
 
+  clearGameBoard() {
+    this.$$.squares.forEach((square) => square.replaceChildren());
+  }
+
+  handlePlayerMove(squareEl, player) {
+    const icon = document.createElement("i");
+    icon.classList.add("fa-solid", player.iconClass, player.colorClass);
+    squareEl.replaceChildren(icon);
+  }
+
+  showResultModal(gameResult) {
+    const winner = gameResult.winner;
+    const modalMsg = winner ? `${winner.name} wins!` : "Tie";
+    this.$.gameResultText.textContent = modalMsg;
+    this.$.gameResultModal.classList.remove("hidden");
+  }
+
+  updateScore(score) {
+    const scores = score.scores;
+
+    this.$.player1Score.textContent = `${scores[0].wins} wins`;
+    this.$.player2Score.textContent = `${scores[1].wins} wins`;
+    this.$.tiesScore.textContent = `${score.ties}`;
+  }
+
+  hideResultModal() {
+    this.$.gameResultModal.classList.add("hidden");
+  }
+
   // player = 1 | 2
   setTurnIndicator(player) {
     const icon = document.createElement("i");
     const label = document.createElement("p");
 
-    this.$.turn.classList.remove(player === 1 ? "turquoise" : "yellow");
-    this.$.turn.classList.add(player === 1 ? "yellow" : "turquoise");
+    icon.classList.add("fa-solid", player.iconClass, player.colorClass);
+    label.classList.add(player.colorClass);
 
-    icon.classList.add("fa-solid", player === 1 ? "fa-x" : "fa-o");
-
-    label.innerText = `Player ${player}, you're up!`;
+    label.innerText = `${player.name}, you're up!`;
 
     this.$.turn.replaceChildren(icon, label);
   }

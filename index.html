@@ -14,9 +14,9 @@
   <body>
     <main>
       <div class="grid">
-        <div class="turn yellow" data-id="turn">
-          <i data-id="turn-icon" class="fa-solid fa-x"></i>
-          <p data-id="turn-text">Player 1, you're up!</p>
+        <div class="turn" data-id="turn">
+          <i data-id="turn-icon" class="fa-solid fa-o turquoise"></i>
+          <p data-id="turn-text" class="turquoise">Player 1, you're up!</p>
         </div>
         <!-- DROPDOWN MENU -->
         <div class="menu" data-id="menu">
@@ -41,15 +41,15 @@
         <div id="9" class="square shadow" data-id="square"></div>
         <div class="score score--player-1 shadow">
           <p>Player 1</p>
-          <span>0 Wins</span>
+          <span data-id="score-player-1">0 Wins</span>
         </div>
         <div class="score score--ties shadow">
           <p>Ties</p>
-          <span>0</span>
+          <span data-id="score-ties">0</span>
         </div>
         <div class="score score--player-2 shadow">
           <p>Player 2</p>
-          <span>0 Wins</span>
+          <span data-id="score-player-2">0 Wins</span>
         </div>
       </div>
     </main>

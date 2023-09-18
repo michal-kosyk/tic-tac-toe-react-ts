@@ -1,4 +1,5 @@
 import View from "./view.js";
+import Model from "./model.js";
 
 const App = {
   $: {
@@ -167,8 +168,26 @@ const App = {
   },
 };
 
+const players = [
+  {
+    id: 1,
+    name: "Player 1",
+    iconClass: "fa-o",
+    colorClass: "turquoise",
+    wins: 0,
+  },
+  {
+    id: 2,
+    name: "Player 2",
+    iconClass: "fa-x",
+    colorClass: "yellow",
+    wins: 0,
+  },
+];
+
 function init() {
   const view = new View();
+  const model = new Model(players);
 
   view.bindGameResetEvent((event) => {
     console.log("Reset Event!");
@@ -180,8 +199,24 @@ function init() {
     console.log(event);
   });
 
-  view.bindPlayerMoveEvent((event) => {
-    view.setTurnIndicator(2);
+  view.bindPlayAgainEvent((event) => {
+    model.restartGame();
+    view.clearGameBoard();
+    view.hideResultModal();
+    view.updateScore(model.score);
+  });
+
+  view.bindPlayerMoveEvent((square) => {
+    if (model.isSquareTaken(+square.id)) return;
+
+    view.handlePlayerMove(square, model.currentPlayer);
+
+    const moveResult = model.makeMove(square.id);
+    if (moveResult.status === "completed") {
+      view.showResultModal(moveResult);
+    } else {
+      view.setTurnIndicator(model.currentPlayer);
+    }
   });
 }
 
