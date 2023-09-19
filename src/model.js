@@ -4,7 +4,6 @@ const initialState = () => {
 const MAX_MOVES = 9;
 
 export default class Model {
-  #state = initialState();
   #winningPatterns = [
     [1, 2, 3],
     [1, 5, 9],
@@ -16,8 +15,9 @@ export default class Model {
     [7, 8, 9],
   ];
 
-  constructor(players) {
+  constructor(players, storageKey) {
     this.players = players;
+    this.storageKey = storageKey;
   }
 
   get currentPlayer() {
@@ -43,6 +43,10 @@ export default class Model {
       ).length,
       ties: gameResults.filter((result) => result.winner === null).length,
     };
+  }
+
+  get moves() {
+    return this.#getState().moves;
   }
 
   restartGame() {
@@ -96,7 +100,9 @@ export default class Model {
   }
 
   #getState() {
-    return this.#state;
+    const item = window.localStorage.getItem(this.storageKey);
+    if (item === "undefined" || item === null) return initialState();
+    return JSON.parse(item);
   }
 
   #setState(stateOrFn) {
@@ -114,13 +120,13 @@ export default class Model {
         throw new Error("InvalidArgumentAsStateException");
     }
 
-    this.#state = newState;
+    window.localStorage.setItem(this.storageKey, JSON.stringify(newState));
   }
 
   #addMove(squareId) {
     this.#setState((state) => {
       state.moves.push({
-        playerId: this.currentPlayer.id,
+        player: this.currentPlayer,
         squareId: +squareId,
       });
       return state;
@@ -129,7 +135,7 @@ export default class Model {
 
   #playerSquares(player) {
     return this.#getState()
-      .moves.filter((moves) => moves.playerId === player.id)
+      .moves.filter((moves) => moves.player.id === player.id)
       .map((move) => move.squareId);
   }
 

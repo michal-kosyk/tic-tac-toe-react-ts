@@ -1,32 +1,41 @@
 import View from "./view.js";
 import Model from "./model.js";
 
-const players = () => {
-  return [
-    {
-      id: 1,
-      name: "Player 1",
-      iconClass: "fa-o",
-      colorClass: "turquoise",
-    },
-    {
-      id: 2,
-      name: "Player 2",
-      iconClass: "fa-x",
-      colorClass: "yellow",
-    },
-  ];
-};
+const players = [
+  {
+    id: 1,
+    name: "Player 1",
+    iconClass: "fa-o",
+    colorClass: "turquoise",
+  },
+  {
+    id: 2,
+    name: "Player 2",
+    iconClass: "fa-x",
+    colorClass: "yellow",
+  },
+];
+
+const storageKey = "tic-tac-toe";
 
 function init() {
   const view = new View();
-  const model = new Model(players());
+  const model = new Model(players, storageKey);
+
+  const initView = () => {
+    view.updateScore(model.score);
+    view.clearGameBoard();
+    view.hideResultModal();
+    view.setTurnIndicator(model.currentPlayer);
+    view.initializeGameBoard(model.moves);
+  };
+
+  initView();
 
   view.bindGameResetEvent((event) => {
-    model.resetGame(players());
-    view.clearGameBoard();
+    model.resetGame(players);
+    initView();
     view.toggleMenu();
-    view.updateScore(model.score);
   });
 
   view.bindNewRoundEvent((event) => {
@@ -36,10 +45,8 @@ function init() {
   });
 
   view.bindPlayAgainEvent((event) => {
-    view.updateScore(model.score);
     model.restartGame();
-    view.clearGameBoard();
-    view.hideResultModal();
+    initView();
   });
 
   view.bindPlayerMoveEvent((square) => {

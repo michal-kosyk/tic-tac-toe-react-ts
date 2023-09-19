@@ -60,6 +60,14 @@ export default class View {
     this.$$.squares.forEach((square) => square.replaceChildren());
   }
 
+  initializeGameBoard(moves) {
+    this.$$.squares.forEach((square) => {
+      const existingMove = moves.find((move) => move.squareId === +square.id);
+
+      if (existingMove) this.handlePlayerMove(square, existingMove.player);
+    });
+  }
+
   handlePlayerMove(squareEl, player) {
     const icon = document.createElement("i");
     icon.classList.add("fa-solid", player.iconClass, player.colorClass);
