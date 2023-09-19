@@ -1,0 +1,14 @@
+{
+  "name": "tic-tac-toe-react-ts",
+  "version": "1.0.0",
+  "description": "Tic-Tac-Toe game built with React and TypeScript",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "https://github.com/michal-kosyk",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^5.2.2"
+  }
+}
