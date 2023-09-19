@@ -30,6 +30,10 @@ function init() {
     view.initializeGameBoard(model.moves);
   };
 
+  window.addEventListener("storage", () => {
+    initView();
+  });
+
   initView();
 
   view.bindGameResetEvent((event) => {
