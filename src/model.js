@@ -1,8 +1,10 @@
-const initialState = { moves: [], ties: 0 };
+const initialState = () => {
+  return { moves: [], gameResults: [] };
+};
 const MAX_MOVES = 9;
 
 export default class Model {
-  #state = initialState;
+  #state = initialState();
   #winningPatterns = [
     [1, 2, 3],
     [1, 5, 9],
@@ -29,12 +31,17 @@ export default class Model {
   }
 
   get score() {
-    const state = this.#getState();
+    const gameResults = this.#getState().gameResults;
+    const player1 = this.players[0];
+    const player2 = this.players[1];
     return {
-      scores: this.players.map((player) => {
-        return { playerId: player.id, wins: player.wins };
-      }),
-      ties: state.ties,
+      player1Wins: gameResults.filter(
+        (result) => result.winner && result.winner.id === player1.id
+      ).length,
+      player2Wins: gameResults.filter(
+        (result) => result.winner && result.winner.id === player2.id
+      ).length,
+      ties: gameResults.filter((result) => result.winner === null).length,
     };
   }
 
@@ -46,7 +53,10 @@ export default class Model {
   }
 
   resetGame(players) {
-    this.players = players;
+    this.#setState((state) => {
+      state.gameResults = [];
+      return state;
+    });
     this.restartGame();
   }
 
@@ -80,11 +90,7 @@ export default class Model {
 
   #saveResult(result) {
     this.#setState((state) => {
-      if (result.winner) {
-        result.winner.wins += 1;
-      } else {
-        state.ties += 1;
-      }
+      state.gameResults.push(result);
       return state;
     });
   }

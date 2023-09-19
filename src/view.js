@@ -74,10 +74,8 @@ export default class View {
   }
 
   updateScore(score) {
-    const scores = score.scores;
-
-    this.$.player1Score.textContent = `${scores[0].wins} wins`;
-    this.$.player2Score.textContent = `${scores[1].wins} wins`;
+    this.$.player1Score.textContent = `${score.player1Wins} wins`;
+    this.$.player2Score.textContent = `${score.player2Wins} wins`;
     this.$.tiesScore.textContent = `${score.ties}`;
   }
 
