@@ -21,8 +21,21 @@ export default class View {
     // UI-only event listeners
 
     this.$.menuButton.addEventListener("click", (event) => {
-      this.toggleMenu();
+      this.#toggleMenu();
     });
+  }
+
+  render(game, score) {
+    const { moves, currentPlayer, status } = game;
+    this.#updateScore(score);
+    this.#closeAll();
+    this.#clearGameBoard();
+    this.#initializeGameBoard(moves);
+    if (status.status === "completed") {
+      this.#showResultModal(status.winner);
+      return;
+    }
+    this.#setTurnIndicator(currentPlayer);
   }
 
   // *** Register event listeners
@@ -47,52 +60,79 @@ export default class View {
 
   // *** DOM helper methods
 
-  toggleMenu() {
-    this.$.menuItems.classList.toggle("hidden");
-    this.$.menuButton.classList.toggle("border");
-
-    const icon = this.$.menuButton.querySelector("i");
-    icon.classList.toggle("fa-chevron-down");
-    icon.classList.toggle("fa-chevron-up");
+  #closeAll() {
+    this.#closeMenu();
+    this.#closeModal();
   }
 
-  clearGameBoard() {
+  #closeModal() {
+    this.$.gameResultModal.classList.add("hidden");
+  }
+
+  #toggleMenu() {
+    this.$.menuButton.classList.toggle("border");
+    this.$.menuItems.classList.toggle("hidden");
+
+    const icon = this.$.menuButton.querySelector("i");
+    icon.classList.toggle("fa-chevron-up");
+    icon.classList.toggle("fa-chevron-down");
+  }
+
+  #closeMenu() {
+    this.$.menuButton.classList.remove("border");
+    this.$.menuItems.classList.add("hidden");
+
+    const icon = this.$.menuButton.querySelector("i");
+    icon.classList.remove("fa-chevron-up");
+    icon.classList.add("fa-chevron-down");
+  }
+
+  #openMenu() {
+    this.$.menuItems.classList.remove("hidden");
+    this.$.menuButton.classList.add("border");
+
+    const icon = this.$.menuButton.querySelector("i");
+    icon.classList.remove("fa-chevron-down");
+    icon.classList.add("fa-chevron-up");
+  }
+
+  #clearGameBoard() {
     this.$$.squares.forEach((square) => square.replaceChildren());
   }
 
-  initializeGameBoard(moves) {
+  #initializeGameBoard(moves) {
+    this.#clearGameBoard();
     this.$$.squares.forEach((square) => {
       const existingMove = moves.find((move) => move.squareId === +square.id);
 
-      if (existingMove) this.handlePlayerMove(square, existingMove.player);
+      if (existingMove) this.#handlePlayerMove(square, existingMove.player);
     });
   }
 
-  handlePlayerMove(squareEl, player) {
+  #handlePlayerMove(squareEl, player) {
     const icon = document.createElement("i");
     icon.classList.add("fa-solid", player.iconClass, player.colorClass);
     squareEl.replaceChildren(icon);
   }
 
-  showResultModal(gameResult) {
-    const winner = gameResult.winner;
+  #showResultModal(winner) {
     const modalMsg = winner ? `${winner.name} wins!` : "Tie";
     this.$.gameResultText.textContent = modalMsg;
     this.$.gameResultModal.classList.remove("hidden");
   }
 
-  updateScore(score) {
+  #updateScore(score) {
     this.$.player1Score.textContent = `${score.player1Wins} wins`;
     this.$.player2Score.textContent = `${score.player2Wins} wins`;
     this.$.tiesScore.textContent = `${score.ties}`;
   }
 
-  hideResultModal() {
+  #hideResultModal() {
     this.$.gameResultModal.classList.add("hidden");
   }
 
   // player = 1 | 2
-  setTurnIndicator(player) {
+  #setTurnIndicator(player) {
     const icon = document.createElement("i");
     const label = document.createElement("p");
 

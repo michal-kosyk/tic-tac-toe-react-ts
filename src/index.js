@@ -22,48 +22,32 @@ function init() {
   const view = new View();
   const model = new Model(players, storageKey);
 
-  const initView = () => {
-    view.updateScore(model.score);
-    view.clearGameBoard();
-    view.hideResultModal();
-    view.setTurnIndicator(model.currentPlayer);
-    view.initializeGameBoard(model.moves);
-  };
-
   window.addEventListener("storage", () => {
-    initView();
+    view.render(model.game, model.score);
   });
 
-  initView();
+  view.render(model.game, model.score);
 
   view.bindGameResetEvent((event) => {
     model.resetGame(players);
-    initView();
-    view.toggleMenu();
+    view.render(model.game, model.score);
   });
 
   view.bindNewRoundEvent((event) => {
     model.restartGame();
-    view.clearGameBoard();
-    view.toggleMenu();
+    view.render(model.game, model.score);
   });
 
   view.bindPlayAgainEvent((event) => {
     model.restartGame();
-    initView();
+    view.render(model.game, model.score);
   });
 
   view.bindPlayerMoveEvent((square) => {
     if (model.isSquareTaken(+square.id)) return;
 
-    view.handlePlayerMove(square, model.currentPlayer);
-
-    const moveResult = model.makeMove(square.id);
-    if (moveResult.status === "completed") {
-      view.showResultModal(moveResult);
-      return;
-    }
-    view.setTurnIndicator(model.currentPlayer);
+    model.makeMove(square.id);
+    view.render(model.game, model.score);
   });
 }
 
