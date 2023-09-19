@@ -3,7 +3,7 @@ const initialState = () => {
 };
 const MAX_MOVES = 9;
 
-export default class Model {
+export default class Model extends EventTarget {
   #winningPatterns = [
     [1, 2, 3],
     [1, 5, 9],
@@ -16,6 +16,7 @@ export default class Model {
   ];
 
   constructor(players, storageKey) {
+    super();
     this.players = players;
     this.storageKey = storageKey;
   }
@@ -148,6 +149,7 @@ export default class Model {
     }
 
     window.localStorage.setItem(this.storageKey, JSON.stringify(newState));
+    this.dispatchEvent(new Event("statechange"));
   }
 
   #addMove(squareId) {

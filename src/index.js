@@ -22,6 +22,10 @@ function init() {
   const view = new View();
   const model = new Model(players, storageKey);
 
+  model.addEventListener("statechange", () => {
+    view.render(model.game, model.score);
+  });
+
   window.addEventListener("storage", () => {
     view.render(model.game, model.score);
   });
@@ -30,24 +34,20 @@ function init() {
 
   view.bindGameResetEvent((event) => {
     model.resetGame(players);
-    view.render(model.game, model.score);
   });
 
   view.bindNewRoundEvent((event) => {
     model.restartGame();
-    view.render(model.game, model.score);
   });
 
   view.bindPlayAgainEvent((event) => {
     model.restartGame();
-    view.render(model.game, model.score);
   });
 
   view.bindPlayerMoveEvent((square) => {
     if (model.isSquareTaken(+square.id)) return;
 
     model.makeMove(square.id);
-    view.render(model.game, model.score);
   });
 }
 
