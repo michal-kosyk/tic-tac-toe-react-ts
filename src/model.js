@@ -72,6 +72,33 @@ export default class Model {
     return existingMove !== undefined;
   }
 
+  get winningPlayer() {
+    let winner = null;
+    this.players.forEach((player) => {
+      if (this.#hasWon(player)) {
+        winner = player;
+        return;
+      }
+    });
+    return winner;
+  }
+
+  get game() {
+    const movesLeft = this.movesLeft;
+    const winner = this.winningPlayer;
+    const status = winner || movesLeft === 0 ? "completed" : "in-progress";
+
+    return {
+      moves: this.moves,
+      currentPlayer: this.currentPlayer,
+      status: {
+        winner,
+        movesLeft,
+        status,
+      },
+    };
+  }
+
   makeMove(squareId) {
     const currentPlayer = this.currentPlayer;
 
