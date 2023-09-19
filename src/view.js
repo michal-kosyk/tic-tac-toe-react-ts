@@ -3,19 +3,20 @@ export default class View {
   $$ = {};
 
   constructor() {
-    this.$.menuButton = this.#qs("[data-id='menu-btn']");
-    this.$.menuItems = this.#qs("[data-id='menu-items']");
-    this.$.resetBtn = this.#qs("[data-id='reset-btn']");
-    this.$.newRoundBtn = this.#qs("[data-id='new-round-btn']");
-    this.$.gameResultModal = this.#qs("[data-id='game-result-modal']");
-    this.$.gameResultText = this.#qs("[data-id='game-result-modal-text']");
-    this.$.gameResultButton = this.#qs("[data-id='game-result-modal-button']");
-    this.$.turn = this.#qs("[data-id='turn']");
-    this.$.turnIcon = this.#qs("[data-id='turn-icon']");
-    this.$.turnText = this.#qs("[data-id='turn-text']");
-    this.$.player1Score = this.#qs("[data-id='score-player-1'");
-    this.$.player2Score = this.#qs("[data-id='score-player-2'");
-    this.$.tiesScore = this.#qs("[data-id='score-ties'");
+    this.$.menuButton = this.#qsDataId("menu-btn");
+    this.$.menuItems = this.#qsDataId("menu-items");
+    this.$.resetBtn = this.#qsDataId("reset-btn");
+    this.$.newRoundBtn = this.#qsDataId("new-round-btn");
+    this.$.gameResultModal = this.#qsDataId("game-result-modal");
+    this.$.gameResultText = this.#qsDataId("game-result-modal-text");
+    this.$.gameResultButton = this.#qsDataId("game-result-modal-button");
+    this.$.turn = this.#qsDataId("turn");
+    this.$.turnIcon = this.#qsDataId("turn-icon");
+    this.$.turnText = this.#qsDataId("turn-text");
+    this.$.player1Score = this.#qsDataId("score-player-1");
+    this.$.player2Score = this.#qsDataId("score-player-2");
+    this.$.tiesScore = this.#qsDataId("score-ties");
+    this.$.grid = this.#qsDataId("grid");
 
     this.$$.squares = this.#qsAll("[data-id='square']");
     // UI-only event listeners
@@ -49,9 +50,7 @@ export default class View {
   }
 
   bindPlayerMoveEvent(handler) {
-    this.$$.squares.forEach((square) => {
-      square.addEventListener("click", () => handler(square));
-    });
+    this.#delegate(this.$.grid, "[data-id='square']", "click", handler);
   }
 
   bindPlayAgainEvent(handler) {
@@ -152,11 +151,23 @@ export default class View {
     return el;
   }
 
+  #qsDataId(dataId, parent) {
+    return this.#qs(`[data-id='${dataId}']`, parent);
+  }
+
   #qsAll(selector, parent) {
     const el = parent
       ? parent.querySelectorAll(selector)
       : document.querySelectorAll(selector);
     if (!el) throw new Error("ElementsNotFoundException");
     return el;
+  }
+
+  #delegate(el, selector, eventKey, handler) {
+    el.addEventListener(eventKey, (event) => {
+      if (event.target.matches(selector)) {
+        handler(event.target);
+      }
+    });
   }
 }
