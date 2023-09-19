@@ -3,7 +3,7 @@ const initialState = () => {
 };
 const MAX_MOVES = 9;
 
-export default class Model {
+export default class Model extends EventTarget {
   #winningPatterns = [
     [1, 2, 3],
     [1, 5, 9],
@@ -16,6 +16,7 @@ export default class Model {
   ];
 
   constructor(players, storageKey) {
+    super();
     this.players = players;
     this.storageKey = storageKey;
   }
@@ -72,6 +73,33 @@ export default class Model {
     return existingMove !== undefined;
   }
 
+  get winningPlayer() {
+    let winner = null;
+    this.players.forEach((player) => {
+      if (this.#hasWon(player)) {
+        winner = player;
+        return;
+      }
+    });
+    return winner;
+  }
+
+  get game() {
+    const movesLeft = this.movesLeft;
+    const winner = this.winningPlayer;
+    const status = winner || movesLeft === 0 ? "completed" : "in-progress";
+
+    return {
+      moves: this.moves,
+      currentPlayer: this.currentPlayer,
+      status: {
+        winner,
+        movesLeft,
+        status,
+      },
+    };
+  }
+
   makeMove(squareId) {
     const currentPlayer = this.currentPlayer;
 
@@ -121,6 +149,7 @@ export default class Model {
     }
 
     window.localStorage.setItem(this.storageKey, JSON.stringify(newState));
+    this.dispatchEvent(new Event("statechange"));
   }
 
   #addMove(squareId) {
