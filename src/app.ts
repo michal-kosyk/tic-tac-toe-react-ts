@@ -1,7 +1,8 @@
 import View from "./view.js";
 import Model from "./model.js";
+import type { Player } from "./types";
 
-const players = [
+const players: Array<Player> = [
   {
     id: 1,
     name: "Player 1",
@@ -16,11 +17,11 @@ const players = [
   },
 ];
 
-const storageKey = "tic-tac-toe";
+const storageKey: string = "tic-tac-toe";
 
 function init() {
-  const view = new View();
-  const model = new Model(players, storageKey);
+  const view: View = new View();
+  const model: Model = new Model(players, storageKey);
 
   model.addEventListener("statechange", () => {
     view.render(model.game, model.score);
@@ -32,22 +33,22 @@ function init() {
 
   view.render(model.game, model.score);
 
-  view.bindGameResetEvent((event) => {
-    model.resetGame(players);
+  view.bindGameResetEvent(() => {
+    model.resetGame();
   });
 
-  view.bindNewRoundEvent((event) => {
+  view.bindNewRoundEvent(() => {
     model.restartGame();
   });
 
-  view.bindPlayAgainEvent((event) => {
+  view.bindPlayAgainEvent(() => {
     model.restartGame();
   });
 
-  view.bindPlayerMoveEvent((square) => {
+  view.bindPlayerMoveEvent((square: Element) => {
     if (model.isSquareTaken(+square.id)) return;
 
-    model.makeMove(square.id);
+    model.makeMove(+square.id);
   });
 }
 
