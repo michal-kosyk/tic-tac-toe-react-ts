@@ -1,6 +1,8 @@
+import type { GameScore, Game, Player, Move, PlayerOrNull } from "./types";
+
 export default class View {
-  $ = {};
-  $$ = {};
+  $: Record<string, Element> = {};
+  $$: Record<string, NodeListOf<Element>> = {};
 
   constructor() {
     this.$.menuButton = this.#qsDataId("menu-btn");
@@ -26,7 +28,7 @@ export default class View {
     });
   }
 
-  render(game, score) {
+  render(game: Game, score: GameScore) {
     const { moves, currentPlayer, status } = game;
     this.#updateScore(score);
     this.#closeAll();
@@ -41,19 +43,19 @@ export default class View {
 
   // *** Register event listeners
 
-  bindGameResetEvent(handler) {
+  bindGameResetEvent(handler: EventListener) {
     this.$.resetBtn.addEventListener("click", handler);
   }
 
-  bindNewRoundEvent(handler) {
+  bindNewRoundEvent(handler: EventListener) {
     this.$.newRoundBtn.addEventListener("click", handler);
   }
 
-  bindPlayerMoveEvent(handler) {
+  bindPlayerMoveEvent(handler: (el: Element) => void) {
     this.#delegate(this.$.grid, "[data-id='square']", "click", handler);
   }
 
-  bindPlayAgainEvent(handler) {
+  bindPlayAgainEvent(handler: EventListener) {
     this.$.gameResultButton.addEventListener("click", handler);
   }
 
@@ -72,7 +74,7 @@ export default class View {
     this.$.menuButton.classList.toggle("border");
     this.$.menuItems.classList.toggle("hidden");
 
-    const icon = this.$.menuButton.querySelector("i");
+    const icon = this.#qs("i", this.$.menuButton);
     icon.classList.toggle("fa-chevron-up");
     icon.classList.toggle("fa-chevron-down");
   }
@@ -81,7 +83,7 @@ export default class View {
     this.$.menuButton.classList.remove("border");
     this.$.menuItems.classList.add("hidden");
 
-    const icon = this.$.menuButton.querySelector("i");
+    const icon = this.#qs("i", this.$.menuButton);
     icon.classList.remove("fa-chevron-up");
     icon.classList.add("fa-chevron-down");
   }
@@ -90,7 +92,7 @@ export default class View {
     this.$.menuItems.classList.remove("hidden");
     this.$.menuButton.classList.add("border");
 
-    const icon = this.$.menuButton.querySelector("i");
+    const icon = this.#qs("i", this.$.menuButton);
     icon.classList.remove("fa-chevron-down");
     icon.classList.add("fa-chevron-up");
   }
@@ -99,7 +101,7 @@ export default class View {
     this.$$.squares.forEach((square) => square.replaceChildren());
   }
 
-  #initializeGameBoard(moves) {
+  #initializeGameBoard(moves: Array<Move>) {
     this.#clearGameBoard();
     this.$$.squares.forEach((square) => {
       const existingMove = moves.find((move) => move.squareId === +square.id);
@@ -108,19 +110,19 @@ export default class View {
     });
   }
 
-  #handlePlayerMove(squareEl, player) {
+  #handlePlayerMove(squareEl: Element, player: Player) {
     const icon = document.createElement("i");
     icon.classList.add("fa-solid", player.iconClass, player.colorClass);
     squareEl.replaceChildren(icon);
   }
 
-  #showResultModal(winner) {
+  #showResultModal(winner: PlayerOrNull) {
     const modalMsg = winner ? `${winner.name} wins!` : "Tie";
     this.$.gameResultText.textContent = modalMsg;
     this.$.gameResultModal.classList.remove("hidden");
   }
 
-  #updateScore(score) {
+  #updateScore(score: GameScore) {
     this.$.player1Score.textContent = `${score.player1Wins} wins`;
     this.$.player2Score.textContent = `${score.player2Wins} wins`;
     this.$.tiesScore.textContent = `${score.ties}`;
@@ -131,7 +133,7 @@ export default class View {
   }
 
   // player = 1 | 2
-  #setTurnIndicator(player) {
+  #setTurnIndicator(player: Player) {
     const icon = document.createElement("i");
     const label = document.createElement("p");
 
@@ -143,19 +145,19 @@ export default class View {
     this.$.turn.replaceChildren(icon, label);
   }
 
-  #qs(selector, parent) {
-    const el = parent
+  #qs(selector: string, parent?: Element): Element {
+    const el: Element | null = parent
       ? parent.querySelector(selector)
       : document.querySelector(selector);
     if (!el) throw new Error("ElementNotFoundException");
     return el;
   }
 
-  #qsDataId(dataId, parent) {
+  #qsDataId(dataId: string, parent?: Element): Element {
     return this.#qs(`[data-id='${dataId}']`, parent);
   }
 
-  #qsAll(selector, parent) {
+  #qsAll(selector: string, parent?: Element): NodeListOf<Element> {
     const el = parent
       ? parent.querySelectorAll(selector)
       : document.querySelectorAll(selector);
@@ -163,8 +165,16 @@ export default class View {
     return el;
   }
 
-  #delegate(el, selector, eventKey, handler) {
+  #delegate(
+    el: Element,
+    selector: string,
+    eventKey: string,
+    handler: (el: Element) => void
+  ) {
     el.addEventListener(eventKey, (event) => {
+      if (!(event.target instanceof Element)) {
+        throw new Error("EventTargetNotFoundException");
+      }
       if (event.target.matches(selector)) {
         handler(event.target);
       }
