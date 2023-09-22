@@ -1,9 +1,10 @@
 import "./App.css";
 import Footer from "./components/Footer";
 import ResultModal from "./components/ResultModal";
+import Menu from "./components/Menu";
 
 export default function App() {
-  const showModal = true;
+  const showModal = false;
   const squareIds = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   return (
     <>
@@ -15,18 +16,8 @@ export default function App() {
               Player 1, you're up!
             </p>
           </div>
+          <Menu onAction={(action) => console.log(action)} />
 
-          <div className="menu" data-id="menu">
-            <button className="menu-btn" data-id="menu-btn">
-              Actions
-              <i className="fa-solid fa-chevron-down"></i>
-            </button>
-
-            <div className="items border hidden" data-id="menu-items">
-              <button data-id="reset-btn">Reset</button>
-              <button data-id="new-round-btn">New Round</button>
-            </div>
-          </div>
           {squareIds.map((id) => {
             return (
               <div key={id} className="square shadow" data-id="square">
