@@ -1,7 +1,10 @@
 import "./App.css";
 import Footer from "./components/Footer";
+import ResultModal from "./components/ResultModal";
 
 export default function App() {
+  const showModal = true;
+  const squareIds = [1, 2, 3, 4, 5, 6, 7, 8, 9];
   return (
     <>
       <main>
@@ -24,15 +27,13 @@ export default function App() {
               <button data-id="new-round-btn">New Round</button>
             </div>
           </div>
-          <div id="1" className="square shadow" data-id="square"></div>
-          <div id="2" className="square shadow" data-id="square"></div>
-          <div id="3" className="square shadow" data-id="square"></div>
-          <div id="4" className="square shadow" data-id="square"></div>
-          <div id="5" className="square shadow" data-id="square"></div>
-          <div id="6" className="square shadow" data-id="square"></div>
-          <div id="7" className="square shadow" data-id="square"></div>
-          <div id="8" className="square shadow" data-id="square"></div>
-          <div id="9" className="square shadow" data-id="square"></div>
+          {squareIds.map((id) => {
+            return (
+              <div key={id} className="square shadow" data-id="square">
+                <i className="fa-solid fa-x turquoise"></i>
+              </div>
+            );
+          })}
           <div className="score score--player-1 shadow">
             <p>Player 1</p>
             <span data-id="score-player-1">0 Wins</span>
@@ -49,13 +50,7 @@ export default function App() {
       </main>
 
       <Footer />
-
-      <div data-id="game-result-modal" className="modal hidden">
-        <div className="modal-contents">
-          <p data-id="game-result-modal-text">Player 1 wins!</p>
-          <button data-id="game-result-modal-button">Play again</button>
-        </div>
-      </div>
+      {showModal && <ResultModal message="Player 1 wins" />}
     </>
   );
 }
