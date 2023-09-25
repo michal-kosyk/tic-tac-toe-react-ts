@@ -8,7 +8,7 @@ import type {
   PlayerOrNull,
 } from "./types";
 
-const initialState = () => {
+const initialState = (): GameState => {
   return { moves: [], gameResults: [] };
 };
 const MAX_MOVES = 9;
