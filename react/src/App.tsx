@@ -115,6 +115,10 @@ function deriveScore(state: GameState): GameScore {
   };
 }
 
+function playerIconClasses(player: Player): string {
+  return `${player.iconClass} ${player.colorClass}`;
+}
+
 export default function App() {
   const [state, setState] = useState<GameState>({
     moves: [],
@@ -161,9 +165,9 @@ export default function App() {
     <>
       <main>
         <div className="grid">
-          <div className="turn">
-            <i className="fa-solid fa-o turquoise"></i>
-            <p className="turquoise">Player 1, you're up!</p>
+          <div className={`turn ${game.currentPlayer.colorClass}`}>
+            <i className={`fa-solid ${game.currentPlayer.iconClass}`}></i>
+            <p>{`${game.currentPlayer.name}, you're up!`}</p>
           </div>
           <Menu
             onAction={(action) =>
@@ -187,7 +191,9 @@ export default function App() {
               >
                 {existingMove && (
                   <i
-                    className={`fa-solid ${existingMove.player.iconClass} ${existingMove.player.colorClass}`}
+                    className={`fa-solid  ${playerIconClasses(
+                      existingMove.player
+                    )}`}
                   ></i>
                 )}
               </div>
