@@ -12,7 +12,7 @@ import {
   Player,
   PlayerOrNull,
 } from "./types";
-import { stat } from "fs";
+import { useLocalStorage } from "./useLocalStorage";
 
 const winningPatterns = [
   [1, 2, 3],
@@ -120,10 +120,10 @@ function playerIconClasses(player: Player): string {
 }
 
 export default function App() {
-  const [state, setState] = useState<GameState>({
+  const [state, setState] = useLocalStorage("tic-tac-toe-react-ts", {
     moves: [],
     gameResults: [],
-  });
+  } as GameState);
   const squareIds = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
   const game = deriveGame(state);
